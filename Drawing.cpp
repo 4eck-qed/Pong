@@ -81,16 +81,6 @@ namespace Drawing
         return this->X < other.X || this->Y < other.Y;
     }
 
-    bool Point::operator>>=(const Point &other) const
-    {
-        return this->X >= other.X || this->Y >= other.Y;
-    }
-
-    bool Point::operator<<=(const Point &other) const
-    {
-        return this->X <= other.X || this->Y >= other.Y;
-    }
-
     bool Point::operator==(const Point &other) const
     {
         return this->X == other.X && this->Y == other.Y;

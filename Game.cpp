@@ -1,92 +1,18 @@
-#include <thread>
 #include "Game.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <unistd.h>
+#include <termios.h>
+
+#define OK 0
+#define ERROR -1
+#define P1_SCORE 10
+#define P2_SCORE 20
+
+struct termios old_tio, new_tio;
 
 using namespace Toolbox;
-
-[[noreturn]]
-void Game::start(std::string player1Name, std::string player2Name)
-{
-    field.placeObject(ball, {field.getWidth() / 2, field.getHeight() / 2});
-    field.placeObject(player1, {1, field.getHeight() / 2});
-    field.placeObject(player2, {field.getWidth() - 2, field.getHeight() / 2});
-
-    auto down = Drawing::Point{0, 1};
-    auto up = Drawing::Point{0, -1};
-    auto left = Drawing::Point{-1, 0};
-    auto right = Drawing::Point{1, 0};
-
-    ball.State = MovingState::GoLeft;
-    player1.State = MovingState::GoDown;
-    player2.State = MovingState::GoDown;
-
-    while (true)
-    {
-        switch (ball.State)
-        {
-            case GoDown:
-                if (field.canMove(ball, down)) field.move(ball, down);
-                else ball.State = MovingState::GoUp;
-                break;
-            case GoUp:
-                if (field.canMove(ball, up)) field.move(ball, up);
-                else ball.State = MovingState::GoDown;
-                break;
-            case GoLeft:
-                if (field.canMove(ball, left)) field.move(ball, left);
-                else ball.State = MovingState::GoRight;
-                break;
-            case GoRight:
-                if (field.canMove(ball, right)) field.move(ball, right);
-                else ball.State = MovingState::GoLeft;
-                break;
-        }
-
-        switch (player1.State)
-        {
-            case GoDown:
-                if (field.canMove(player1, down)) field.move(player1, down);
-                else player1.State = MovingState::GoUp;
-                break;
-            case GoUp:
-                if (field.canMove(player1, up)) field.move(player1, up);
-                else player1.State = MovingState::GoDown;
-                break;
-            case GoLeft:
-                if (field.canMove(player1, left)) field.move(player1, left);
-                else player1.State = MovingState::GoRight;
-                break;
-            case GoRight:
-                if (field.canMove(player1, right)) field.move(player1, right);
-                else player1.State = MovingState::GoLeft;
-                break;
-        }
-
-        switch (player2.State)
-        {
-            case GoDown:
-                if (field.canMove(player2, down)) field.move(player2, down);
-                else player2.State = MovingState::GoUp;
-                break;
-            case GoUp:
-                if (field.canMove(player2, up)) field.move(player2, up);
-                else player2.State = MovingState::GoDown;
-                break;
-            case GoLeft:
-                if (field.canMove(player2, left)) field.move(player2, left);
-                else player2.State = MovingState::GoRight;
-                break;
-            case GoRight:
-                if (field.canMove(player2, right)) field.move(player2, right);
-                else player2.State = MovingState::GoLeft;
-                break;
-        }
-
-//      OnPlayerAction();
-        system("clear");
-        field.update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    }
-}
 
 Game::Game() : Game(64, 16)
 {
@@ -99,4 +25,130 @@ Game::Game(int width, int height, std::string player1Name, std::string player2Na
     ball = Ball();
     player1 = Player(player1Name);
     player2 = Player(player2Name);
+}
+
+#pragma region static functions
+static void __setup_console()
+{
+    /* get the terminal settings for stdin */
+    tcgetattr(STDIN_FILENO,&old_tio);
+
+    /* we want to keep the old setting to restore them a the end */
+    new_tio=old_tio;
+
+    /* disable canonical mode (buffered i/o) and local echo */
+    new_tio.c_lflag &=(~ICANON & ~ECHO);
+
+    /* set the new settings immediately */
+    tcsetattr(STDIN_FILENO,TCSANOW,&new_tio);
+}
+
+static void __restore_console()
+{
+    /* restore the former settings */
+    tcsetattr(STDIN_FILENO,TCSANOW,&old_tio);
+}
+
+#pragma endregion
+
+void Game::Start()
+{
+    __setup_console();
+    field.placeObject(ball, {field.getWidth() / 2, field.getHeight() / 2});
+    field.placeObject(player1, {1, field.getHeight() / 2});
+    field.placeObject(player2, {field.getWidth() - 2, field.getHeight() / 2});
+
+    ball.State = MovingState::GoLeft;
+    player1.State = MovingState::GoDown;
+    player2.State = MovingState::GoDown;
+
+    auto input = '-';
+    auto exit = OK;
+    auto io_thread = std::thread([&] {
+        if (exit != OK) std::terminate();
+        while (std::cin >> input);
+    });
+
+    exit = __game_loop(input);
+    system("clear");
+    std::cout << "asdoaksod" << std::endl;
+    switch (exit)
+    {
+        case P1_SCORE:
+            printf("%s WIN!", player1.getName().c_str());
+            break;
+        case P2_SCORE:
+            printf("%s WIN!", player2.getName().c_str());
+            break;
+        case ERROR:
+            printf("Game crashed (%d)\n", exit);
+            break;
+    }
+    printf("Press any key to continue..");
+    std::cin.get();
+    __restore_console();
+}
+
+Action Game::HandlePlayerAction(char &input)
+{
+    switch (input)
+    {
+        case 'w': //p1 up
+            if (field.canMove(player1, Up)) field.move(player1, Up);
+            input = '?';
+            return MOVE;
+        case 's': //p1 down
+            if (field.canMove(player1, Down)) field.move(player1, Down);
+            input = '?';
+            return MOVE;
+        case '8': //p2 up
+            if (field.canMove(player2, Up)) field.move(player2, Up);
+            input = '?';
+            return MOVE;
+        case '5': //p2 down
+            if (field.canMove(player2, Down)) field.move(player2, Down);
+            input = '?';
+            return MOVE;
+        case 'q':
+            input = 'q';
+            return ESC;
+    }
+    return NONE;
+}
+
+int Game::__game_loop(char &input)
+{
+    auto action = NONE;
+    do
+    {
+        if (field.IsOnLeftBoundary(ball))
+            return P1_SCORE;
+        if (field.IsOnRightBoundary(ball))
+            return P2_SCORE;
+
+        switch (ball.State)
+        {
+            case GoDown:
+                if (field.canMove(ball, Down)) field.move(ball, Down);
+                else ball.State = MovingState::GoUp;
+                break;
+            case GoUp:
+                if (field.canMove(ball, Up)) field.move(ball, Up);
+                else ball.State = MovingState::GoDown;
+                break;
+            case GoLeft:
+                if (field.canMove(ball, Left)) field.move(ball, Left);
+                else ball.State = MovingState::GoRight;
+                break;
+            case GoRight:
+                if (field.canMove(ball, Right)) field.move(ball, Right);
+                else ball.State = MovingState::GoLeft;
+                break;
+        }
+        action = HandlePlayerAction(input);
+        system("clear");
+        field.draw();
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    } while (action != ESC);
+    return OK;
 }

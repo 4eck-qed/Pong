@@ -5,7 +5,6 @@
 
 namespace Drawing
 {
-//    typedef std::pair<u_int64_t, u_int64_t> Point;
     struct Point
     {
         Point();
@@ -40,10 +39,6 @@ namespace Drawing
         bool operator>>(const Point &other) const;
 
         bool operator<<(const Point &other) const;
-
-        bool operator>>=(const Point &other) const;
-
-        bool operator<<=(const Point &other) const;
 
         bool operator==(const Point &other) const;
 
