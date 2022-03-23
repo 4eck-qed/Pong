@@ -19,7 +19,7 @@ std::string Player::getName() const
     return name;
 }
 
-char Player::getCharacter() const
+char Player::GetCharacter() const
 {
     return '|';
 }

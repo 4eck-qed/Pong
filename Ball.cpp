@@ -1,6 +1,6 @@
 #include "Ball.h"
 
-char Ball::getCharacter() const
+char Ball::GetCharacter() const
 {
     return this->body;
 }

@@ -3,11 +3,6 @@
 #include "Field.h"
 #include "Ball.h"
 #include "Player.h"
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/posix/stream_descriptor.hpp>
-#include <boost/system/error_code.hpp>
-#include <future>
-#include <termios.h>
 
 enum Action {
     MOVE,

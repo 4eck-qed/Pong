@@ -1,7 +1,5 @@
 TODO
 
->Player Movement
-    Detect Key stroke async
 Game Score when Ball hits Wall
 Scoreboard
 UI

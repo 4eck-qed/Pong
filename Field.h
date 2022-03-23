@@ -27,47 +27,69 @@ public:
     Field(int width, int height);
 
     // gets the width
-    int getWidth() const;
+    int GetWidth() const;
 
     // gets the height
-    int getHeight() const;
+    int GetHeight() const;
 
     // prints the field
-    void draw();
+    void Draw();
 
     // places object on position
-    void placeObject(const ConsoleObject &c, Drawing::Point &&position);
-
-    // access field
-    wchar_t &operator[](const Drawing::Point &position);
+    void PlaceObject(const ConsoleObject &object, Drawing::Point &&position);
 
     // moves target by offset
-    void move(const ConsoleObject &object, const Drawing::Point &offset);
+    void Move(const ConsoleObject &object, const Drawing::Point &offset);
 
     // moves target in direction
-    void move(const ConsoleObject &object, Direction direction);
+    void Move(const ConsoleObject &object, Direction direction);
 
-    // returns if target can move by given offset
-    bool canMove(const ConsoleObject &object, const Drawing::Point &offset);
+    // returns if target can Move by given offset
+    bool CanMove(const ConsoleObject &object, const Drawing::Point &offset);
 
-    // returns if target can move in given direction
-    bool canMove(const ConsoleObject &object, Direction direction);
+    // returns if target can Move in given direction
+    bool CanMove(const ConsoleObject &object, Direction direction);
 
     // returns if position is colliding with something
     bool IsColliding(const Drawing::Point &position);
 
+    // returns true if object is on any boundary
+    bool IsTouchingAnyBoundary(const ConsoleObject &object);
+
+    // returns true if position is on any boundary
+    bool IsTouchingAnyBoundary(const Drawing::Point &position);
+
     // returns true if object is on left boundary
-    bool IsOnLeftBoundary(const ConsoleObject &object);
+    bool IsTouchingTopBoundary(const ConsoleObject &object);
 
     // returns true if position is on left boundary
-    bool IsOnLeftBoundary(const Drawing::Point &position);
+    bool IsTouchingTopBoundary(const Drawing::Point &position);
 
     // returns true if object is on right boundary
-    bool IsOnRightBoundary(const ConsoleObject &object);
+    bool IsTouchingBottomBoundary(const ConsoleObject &object);
 
     // returns true if position is on right boundary
-    bool IsOnRightBoundary(const Drawing::Point &position);
+    bool IsTouchingBottomBoundary(const Drawing::Point &position);
+
+    // returns true if object is on left boundary
+    bool IsTouchingLeftBoundary(const ConsoleObject &object);
+
+    // returns true if position is on left boundary
+    bool IsTouchingLeftBoundary(const Drawing::Point &position);
+
+    // returns true if object is on right boundary
+    bool IsTouchingRightBoundary(const ConsoleObject &object);
+
+    // returns true if position is on right boundary
+    bool IsTouchingRightBoundary(const Drawing::Point &position);
 
     Drawing::Point topLeftCorner{0, 0};
     Drawing::Point bottomRightCorner{0, 0};
+
+#pragma region overloads
+
+    // accesses the field
+    wchar_t &operator[](const Drawing::Point &position);
+
+#pragma endregion
 };

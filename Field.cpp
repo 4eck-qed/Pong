@@ -24,20 +24,19 @@ Field::Field(int width, int height)
     direction_vectors[Left] = {-1, 0};
     direction_vectors[Right] = {1, 0};
 
-    { // Generate field
-        field.append(L'┌' + Toolbox::multiplyWChar(L'─', width - 2) + L'┐' + L'\n');
-        auto line = L'│' + Toolbox::multiplyWChar(L' ', width - 2) + L'│';
-        field.append(Toolbox::multiplyWString(line + L'\n', height));
-        field.append(L'└' + Toolbox::multiplyWChar(L'─', width - 2) + L'┘' + L'\n');
-    }
+    // Generate field
+    field.append(L'┌' + Toolbox::multiplyWChar(L'─', width - 2) + L'┐' + L'\n');
+    auto line = L'│' + Toolbox::multiplyWChar(L' ', width - 2) + L'│';
+    field.append(Toolbox::multiplyWString(line + L'\n', height));
+    field.append(L'└' + Toolbox::multiplyWChar(L'─', width - 2) + L'┘' + L'\n');
 }
 
-void Field::draw()
+void Field::Draw()
 {
     std::wcout << field << std::endl;
 }
 
-void Field::placeObject(const ConsoleObject &object, Drawing::Point &&position)
+void Field::PlaceObject(const ConsoleObject &object, Point &&position)
 {
     if (position >> Point{width - 2, height} || position << Point{1, 1})
     {
@@ -45,78 +44,101 @@ void Field::placeObject(const ConsoleObject &object, Drawing::Point &&position)
         return;
     }
 
-    (*this)[position] = object.getCharacter();
+    (*this)[position] = object.GetCharacter();
     children[&object] = position;
 }
 
-void Field::move(const ConsoleObject &target, const Drawing::Point &offset)
+void Field::Move(const ConsoleObject &object, const Point &offset)
 {
-    auto targetPosition = children[&target];
-    auto newPosition = targetPosition + offset;
+    auto objectPosition = children[&object];
+    auto newPosition = objectPosition + offset;
 
-    if (!canMove(target, offset))
-    {
-        std::cout << "Can't move out of boundaries!" << std::endl;
-        return;
-    }
-
-    (*this)[targetPosition] = ' ';
-    (*this)[newPosition] = target.getCharacter();
-    children[&target] = newPosition;
+    (*this)[objectPosition] = ' ';
+    (*this)[newPosition] = object.GetCharacter();
+    children[&object] = newPosition;
 }
 
-void Field::move(const ConsoleObject &target, Direction direction)
+void Field::Move(const ConsoleObject &object, Direction direction)
 {
-    move(target, direction_vectors[direction]);
+    Move(object, direction_vectors[direction]);
 }
 
-bool Field::canMove(const ConsoleObject &target, const Point &offset)
+#pragma region checks
+
+bool Field::CanMove(const ConsoleObject &object, const Point &offset)
 {
-    auto newPosition = children[&target] + offset;
+    auto newPosition = children[&object] + offset;
     return not IsColliding(newPosition);
 }
 
-bool Field::canMove(const ConsoleObject &target, Direction direction)
+bool Field::CanMove(const ConsoleObject &object, Direction direction)
 {
-    auto newPosition = children[&target] + direction_vectors[direction];
-    return not IsColliding(newPosition);
+    return CanMove(object, direction_vectors[direction]);
 }
 
 bool Field::IsColliding(const Point &position)
 {
-    if (IsOnLeftBoundary(position) || IsOnRightBoundary(position))
-        return true;
-
-    for (const auto &child: children)
-        if (child.second == position)
-            return true;
-
-    return false;
+    return (*this)[position] != ' ';
 }
 
-bool Field::IsOnLeftBoundary(const ConsoleObject &target)
+bool Field::IsTouchingAnyBoundary(const ConsoleObject &object)
 {
-    return children[&target].X == 1;
+    return IsTouchingLeftBoundary(children[&object]);
 }
 
-bool Field::IsOnLeftBoundary(const Point &position)
+bool Field::IsTouchingAnyBoundary(const Point &position)
 {
-    return position.X == 1;
+    return IsTouchingTopBoundary(position) ||
+           IsTouchingBottomBoundary(position) ||
+           IsTouchingLeftBoundary(position) ||
+           IsTouchingRightBoundary(position);
 }
 
-bool Field::IsOnRightBoundary(const ConsoleObject &target)
+bool Field::IsTouchingTopBoundary(const ConsoleObject &object)
 {
-    return children[&target].X == width - 2;
+    return IsTouchingTopBoundary(children[&object]);
 }
 
-bool Field::IsOnRightBoundary(const Point &position)
+bool Field::IsTouchingTopBoundary(const Point &position)
 {
-    return position.X == width - 2;
+    return position.Y <= 1;
 }
+
+bool Field::IsTouchingBottomBoundary(const ConsoleObject &object)
+{
+    return IsTouchingBottomBoundary(children[&object]);
+}
+
+bool Field::IsTouchingBottomBoundary(const Point &position)
+{
+    return position.Y >= height - 1;
+}
+
+bool Field::IsTouchingLeftBoundary(const ConsoleObject &object)
+{
+    return IsTouchingLeftBoundary(children[&object]);
+}
+
+bool Field::IsTouchingLeftBoundary(const Point &position)
+{
+    return position.X <= 1;
+}
+
+bool Field::IsTouchingRightBoundary(const ConsoleObject &object)
+{
+    return IsTouchingRightBoundary(children[&object]);
+}
+
+bool Field::IsTouchingRightBoundary(const Point &position)
+{
+    return position.X >= width - 2;
+}
+
+#pragma endregion
 
 #pragma region overloads
 
-wchar_t &Field::operator[](const Drawing::Point &position)
+wchar_t &Field::operator[](const Point &position)
 {
     auto row = position.X;
     auto column = width * position.Y;
@@ -130,12 +152,12 @@ wchar_t &Field::operator[](const Drawing::Point &position)
 
 #pragma region Getters and Setters
 
-int Field::getWidth() const
+int Field::GetWidth() const
 {
     return width;
 }
 
-int Field::getHeight() const
+int Field::GetHeight() const
 {
     return height;
 }

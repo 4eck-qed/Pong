@@ -14,7 +14,7 @@ private:
 public:
     std::string getName() const;
 
-    char getCharacter() const;
+    char GetCharacter() const;
 
     Toolbox::MovingState State;
 };
