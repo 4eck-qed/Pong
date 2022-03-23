@@ -5,14 +5,7 @@
 #include <math.h>
 #include "Drawing.h"
 #include "ConsoleObject.h"
-
-enum MovingState
-{
-    GoDown,
-    GoUp,
-    GoLeft,
-    GoRight,
-};
+#include "Utils/Toolbox.h"
 
 class Ball : public ConsoleObject
 {
@@ -23,5 +16,5 @@ public:
 
     char getCharacter() const;
 
-    MovingState State;
+    Toolbox::MovingState State;
 };
