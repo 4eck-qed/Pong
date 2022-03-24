@@ -5,6 +5,6 @@
 class ConsoleObject
 {
 public:
-    virtual std::string getName() const = 0;
+    virtual std::string GetName() const = 0;
     virtual char GetCharacter() const = 0;
 };

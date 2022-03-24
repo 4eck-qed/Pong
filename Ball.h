@@ -12,7 +12,7 @@ class Ball : public ConsoleObject
 private:
     char body = 'o';
 public:
-    std::string getName() const;
+    std::string GetName() const;
 
     char GetCharacter() const;
 

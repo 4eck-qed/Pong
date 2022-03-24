@@ -2,7 +2,7 @@
 
 namespace Toolbox
 {
-    std::string multiplyChars(char c, int digits)
+    std::string MultiplyChars(char c, int digits)
     {
         std::string result;
         for (int i = 0; i < digits; i++)
@@ -11,7 +11,7 @@ namespace Toolbox
         return result;
     }
 
-    std::string multiplyString(const std::string &s, int digits)
+    std::string MultiplyString(const std::string &s, int digits)
     {
         std::string result;
         for (int i = 0; i < digits; i++)
@@ -20,7 +20,7 @@ namespace Toolbox
         return result;
     }
 
-    std::wstring multiplyWString(const std::wstring &s, int digits)
+    std::wstring MultiplyWString(const std::wstring &s, int digits)
     {
         std::wstring result;
         for (int i = 0; i < digits; i++)
@@ -29,7 +29,7 @@ namespace Toolbox
         return result;
     }
 
-    std::wstring multiplyWChar(const wchar_t s, int digits)
+    std::wstring MultiplyWChars(const wchar_t s, int digits)
     {
         std::wstring result;
         for (int i = 0; i < digits; i++)
@@ -38,7 +38,7 @@ namespace Toolbox
         return result;
     }
 
-    int countChar(char c, std::string s)
+    int CountChar(char c, std::string s)
     {
         int count = 0;
         for (auto character: s)
@@ -49,7 +49,7 @@ namespace Toolbox
         return count;
     }
 
-    int countWChar(wchar_t term, std::wstring ws)
+    int CountWChar(wchar_t term, std::wstring ws)
     {
         int count = 0;
         for (auto wc: ws)

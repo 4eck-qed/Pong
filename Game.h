@@ -3,6 +3,7 @@
 #include "Field.h"
 #include "Ball.h"
 #include "Player.h"
+#include "Scoreboard.h"
 
 enum Action {
     MOVE,
@@ -28,4 +29,5 @@ private:
     Ball ball;
     Player player1;
     Player player2;
+    Scoreboard scoreboard;
 };

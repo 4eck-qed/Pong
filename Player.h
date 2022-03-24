@@ -10,7 +10,6 @@ private:
 public:
     Player();
     Player(std::string name);
-    std::string getName() const;
+    std::string GetName() const;
     char GetCharacter() const;
-    Toolbox::MovingState State;
 };

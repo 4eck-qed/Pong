@@ -14,7 +14,7 @@ Player::Player(std::string name) : name(name)
 
 }
 
-std::string Player::getName() const
+std::string Player::GetName() const
 {
     return name;
 }

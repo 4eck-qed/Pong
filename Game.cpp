@@ -5,8 +5,6 @@
 #include <chrono>
 #include <unistd.h>
 #include <termios.h>
-#include <condition_variable>
-#include <mutex>
 
 #define OK 0
 #define ERROR -1
@@ -21,11 +19,14 @@ Game::Game() : Game(64, 16)
 }
 
 Game::Game(int width, int height, std::string player1Name, std::string player2Name)
+        : scoreboard(Scoreboard(width, height))
 {
     field = Field(width, height);
     ball = Ball();
     player1 = Player(player1Name);
     player2 = Player(player2Name);
+    scoreboard.AddEntry(player1.GetName(), 0);
+    scoreboard.AddEntry(player2.GetName(), 0);
 }
 
 #pragma region static functions
@@ -63,8 +64,6 @@ void Game::Start()
     field.PlaceObject(player2, {field.GetWidth() - 2, field.GetHeight() / 2});
 
     ball.State = MovingState::GoLeft;
-    player1.State = MovingState::GoDown;
-    player2.State = MovingState::GoDown;
 
     auto input = '-';
     auto exit = OK;
@@ -77,15 +76,21 @@ void Game::Start()
     switch (exit)
     {
         case P1_SCORE:
-            std::wcout << Converter::stringToWString(player1.getName()) << " WIN!" << std::endl;
+            std::wcout << Converter::StringToWString(player1.GetName()) << " WIN!" << std::endl;
+            scoreboard.IncreaseCount(player1.GetName());
             break;
         case P2_SCORE:
-            std::wcout << Converter::stringToWString(player2.getName()) << " WIN!" << std::endl;
+            std::wcout << Converter::StringToWString(player2.GetName()) << " WIN!" << std::endl;
+            scoreboard.IncreaseCount(player2.GetName());
             break;
         case ERROR:
             std::wcout << L"Game crashed (" << exit << ")" << std::endl;
-            break;
+            __restore_console();
+            return;
     }
+
+    scoreboard.Draw();
+
     io_thread.detach();
     __restore_console();
 }

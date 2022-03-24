@@ -5,7 +5,7 @@ char Ball::GetCharacter() const
     return this->body;
 }
 
-std::string Ball::getName() const
+std::string Ball::GetName() const
 {
     return "deeznuts";
 }

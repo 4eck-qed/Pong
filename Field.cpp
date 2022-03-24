@@ -25,10 +25,10 @@ Field::Field(int width, int height)
     direction_vectors[Right] = {1, 0};
 
     // Generate field
-    field.append(L'┌' + Toolbox::multiplyWChar(L'─', width - 2) + L'┐' + L'\n');
-    auto line = L'│' + Toolbox::multiplyWChar(L' ', width - 2) + L'│';
-    field.append(Toolbox::multiplyWString(line + L'\n', height));
-    field.append(L'└' + Toolbox::multiplyWChar(L'─', width - 2) + L'┘' + L'\n');
+    field.append(L'┌' + Toolbox::MultiplyWChars(L'─', width - 2) + L'┐' + L'\n');
+    auto line = L'│' + Toolbox::MultiplyWChars(L' ', width - 2) + L'│';
+    field.append(Toolbox::MultiplyWString(line + L'\n', height));
+    field.append(L'└' + Toolbox::MultiplyWChars(L'─', width - 2) + L'┘' + L'\n');
 }
 
 void Field::Draw()
@@ -142,7 +142,7 @@ wchar_t &Field::operator[](const Point &position)
 {
     auto row = position.X;
     auto column = width * position.Y;
-    auto newLineChars = Toolbox::countWChar(L'\n', field.substr(0, column)) + 1;
+    auto newLineChars = Toolbox::CountWChar(L'\n', field.substr(0, column)) + 1;
     column += newLineChars;
 
     return field[row + column];

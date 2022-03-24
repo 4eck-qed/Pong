@@ -1,24 +1,10 @@
-//
-// Created by baron on 22.03.22.
-//
-
-#ifndef PONG_CONVERTER_H
-#define PONG_CONVERTER_H
+#pragma once
 
 #include <string>
 
 namespace Converter
 {
-    std::wstring stringToWString(const std::string &s)
-    {
-        return std::wstring(s.begin(), s.end());
-    }
+    std::wstring StringToWString(const std::string &s);
 
-    std::string wstringToString(const std::wstring &ws)
-    {
-        return std::string(ws.begin(), ws.end());
-    }
+    std::string WStringToString(const std::wstring &ws);
 }
-
-
-#endif //PONG_CONVERTER_H
