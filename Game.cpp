@@ -67,6 +67,7 @@ void Game::Start()
 
     auto input = '-';
     auto exit = OK;
+
     auto io_thread = std::thread([&] {
         while (exit == OK && std::cin >> input);
     });

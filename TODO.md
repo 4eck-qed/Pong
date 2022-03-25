@@ -1,6 +1,5 @@
 TODO
 
-- [ ] Game Score when Ball hits Wall
 - [ ] Scoreboard 
   - Save and Load from File 
 - [ ] UI 
