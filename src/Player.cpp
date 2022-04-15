@@ -2,7 +2,7 @@
 // Created by baron on 22.03.22.
 //
 
-#include "Player.h"
+#include "../include/Player.h"
 
 Player::Player()
 {

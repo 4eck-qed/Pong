@@ -1,6 +1,6 @@
-#include "Scoreboard.h"
-#include "Utils/Toolbox.h"
-#include "Utils/Converter.h"
+#include "../include/Scoreboard.h"
+#include "../Utils/Toolbox.h"
+#include "../Utils/Converter.h"
 
 #include <iostream>
 

@@ -1,5 +1,5 @@
-#include "Game.h"
-#include "Utils/Converter.h"
+#include "../include/Game.h"
+#include "../Utils/Converter.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
